@@ -3,5 +3,5 @@
 /consumer-service/node_modules
 
 /producer-service/.env
-/producer-service/.env
-/producer-service/.env
+/logs-service/.env
+/consumer-service/.env
