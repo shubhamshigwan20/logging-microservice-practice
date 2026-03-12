@@ -5,6 +5,11 @@ const handleLogs = async (req, res, next) => {
   try {
     const { level, service, message } = req.body;
     // validate data
+    if (!process.env.RENDER_URL) {
+      const err = new Error("RENDER_URL is not set");
+      err.status = 500;
+      throw err;
+    }
 
     const payload = {
       level,
@@ -13,7 +18,7 @@ const handleLogs = async (req, res, next) => {
       timestamp: new Date().toLocaleString(),
     };
 
-    const result = api.post("/publish", payload);
+    const result = await api.post("/publish", payload);
 
     if (result.status === 200) {
       return res.status(200).json({

@@ -2,9 +2,9 @@ const axios = require("axios");
 
 const baseURL = process.env.RENDER_URL;
 
-axios.create({
+const api = axios.create({
   baseURL: baseURL,
   timeout: 5000,
 });
 
-module.exports = axios;
+module.exports = api;

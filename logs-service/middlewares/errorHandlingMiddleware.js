@@ -1,12 +1,23 @@
 const errorMiddleware = (err, req, res, next) => {
-  console.log("a45");
-  if (err) {
-    return res.status(500).json({
-      status: false,
-      message: "internal server error",
-    });
+  if (!err) {
+    return next();
   }
-  next();
+
+  const status =
+    err.status ||
+    err.statusCode ||
+    err.response?.status ||
+    500;
+
+  const message =
+    err.message ||
+    err.response?.data?.message ||
+    "internal server error";
+
+  return res.status(status).json({
+    status: false,
+    message,
+  });
 };
 
 module.exports = errorMiddleware;
