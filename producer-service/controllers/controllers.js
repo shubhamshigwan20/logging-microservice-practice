@@ -1,3 +1,4 @@
+const { z } = require("zod");
 const { Queue } = require("bullmq");
 // const Redis = require("ioredis");
 require("dotenv").config();
@@ -8,10 +9,23 @@ const logsQueue = new Queue("logs_queue", {
   },
 });
 
+const addJobSchema = z.object({
+  level: z.string(),
+  service: z.string(),
+  message: z.string(),
+});
+
 const addJob = async (req, res, next) => {
   try {
     const { level, service, message } = req.body;
-    // validate data
+
+    const parseResult = addJobSchema.safeParse({ level, service, message });
+    if (!parseResult) {
+      return res.status(400).json({
+        status: false,
+        message: "bad request",
+      });
+    }
 
     const payload = {
       level,
