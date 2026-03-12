@@ -14,6 +14,7 @@ app.get("/", (req, res) => {
   return res.status(200).json({
     status: true,
     timestamp: new Date().toLocaleString(),
+    message: "producer-service running",
   });
 });
 app.use(router);
