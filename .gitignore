@@ -1,0 +1,7 @@
+/producer-service/node_modules
+/logs-service/node_modules
+/consumer-service/node_modules
+
+/producer-service/.env
+/producer-service/.env
+/producer-service/.env
