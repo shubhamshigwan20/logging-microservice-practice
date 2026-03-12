@@ -12,14 +12,14 @@ const logsQueue = new Queue("logs_queue", {
 
 const addJob = async (req, res, next) => {
   try {
-    const { level, service, message, timestamp } = req.body;
+    const { level, service, message } = req.body;
     // validate data
 
     const payload = {
       level,
       service,
       message,
-      timestamp,
+      timestamp: new Date().toISOString(),
     };
 
     // const redis = new Redis({ url: process.env.REDIS_URL });
