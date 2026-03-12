@@ -1,6 +1,8 @@
 const { Queue } = require("bullmq");
-const Redis = require("ioredis");
+// const Redis = require("ioredis");
 require("dotenv").config();
+
+let jobId = 0;
 
 const logsQueue = new Queue("logs_queue", {
   connection: {
@@ -20,8 +22,9 @@ const addJob = async (req, res, next) => {
       timestamp,
     };
 
-    const redis = new Redis({ url: process.env.REDIS_URL });
-    const jobId = await redis.incr("job");
+    // const redis = new Redis({ url: process.env.REDIS_URL });
+    // const jobId = await redis.incr("job");
+    jobId += 1;
     const result = await logsQueue.add(`job-${jobId}`, payload);
     return res.status(200).json({
       status: true,
