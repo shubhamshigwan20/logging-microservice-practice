@@ -4,6 +4,7 @@ const helmet = require("helmet");
 const cors = require("cors");
 require("dotenv").config();
 const router = require("./routes/appRoutes");
+const errorMiddleware = require("./middlewares/errorHandlingMiddleware");
 const PORT = process.env.PORT;
 
 app.use(express.json());
@@ -18,6 +19,7 @@ app.get("/", (req, res) => {
   });
 });
 app.use(router);
+app.use(errorMiddleware);
 
 app.listen(PORT, () => {
   console.log(`server started on PORT ${PORT}`);
