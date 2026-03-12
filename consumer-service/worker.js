@@ -1,6 +1,12 @@
 const db = require("./db/db");
-const { Worker } = require("bullmq");
+const { Queue, Worker } = require("bullmq");
 require("dotenv").config();
+
+const dlq = new Queue("logs_dlq", {
+  connection: {
+    url: process.env.REDIS_URL,
+  },
+});
 
 const worker = new Worker(
   "logs_queue",
@@ -30,8 +36,15 @@ worker.on("completed", (job) => {
   console.log(`data inserted to db for job ${job.id}`);
 });
 
-worker.on("failed", (job, err) => {
-  console.log(
-    `failed inserting data in db for job ${job.id} with error ${err}`,
-  );
+worker.on("failed", async (job, err) => {
+  const attemptsLeft = job.attemptsMade < job.opts.attempts;
+  if (attemptsLeft) return;
+  await dlq.add("logs_failed", {
+    originalJobId: job.id,
+    payload: job.data,
+    error: err.message,
+    failedAt: new Date().toISOString(),
+  });
+
+  console.log(`job ${job.id} moved to DLQ`);
 });
